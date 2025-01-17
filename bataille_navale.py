@@ -2,13 +2,14 @@ import random
 import time
 
 # Datas
-aircraft_carrier = [5,5]
-cruiser = [4,4]
-destroyer = [3,3]
-submarine = [2,3]
-torpedo = [1,2]
+aircraft_carrier = [5, 5]
+cruiser = [4, 4]
+destroyer = [3, 3]
+submarine = [2, 3]
+torpedo = [1, 2]
 fleet = [aircraft_carrier, cruiser, destroyer, submarine, torpedo]
-header = {"A":0, "B":1, "C":2, "D":3, "E":4, "F":5, "G":6, "H":7, "I":8, "J":9}
+header = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9}
+
 
 def board():
     """
@@ -17,12 +18,13 @@ def board():
     """
     grid = []
 
-    for i in range(10):
+    for _ in range(10):
         y = []
-        for j in range(10):
+        for _ in range(10):
             y.append(0)
         grid.append(y)
     return grid
+
 
 def init_board():
     """
@@ -34,6 +36,7 @@ def init_board():
     for boat in fleet:
         place_boats(boat, grid)
     return grid
+
 
 def place_boats(boat, grid):
     """
@@ -71,6 +74,7 @@ def place_boats(boat, grid):
                     grid[x][y + i] = boat_number
             well_placed = True
 
+
 def shoot(guess, grid, player_grid):
     """
     Allow the user to choose a cell in the board
@@ -94,6 +98,7 @@ def shoot(guess, grid, player_grid):
         case "O" | "X":
             print("Vous avez déjà tiré à cette endroit!\n")
 
+
 def destroyed_boat(grid):
     """
     Method to indicate if all boats are destroyed
@@ -106,11 +111,12 @@ def destroyed_boat(grid):
             if isinstance(cell, int) and cell > 0:
                 boat_remaining.add(cell)
 
-    if  not boat_remaining:
+    if not boat_remaining:
         print("Tous les bateaux ont été coulés !!")
         return True
     else:
         return False
+
 
 def display_player_board(grid):
     """
@@ -120,11 +126,12 @@ def display_player_board(grid):
     print("    +---+---+---+---+---+---+---+---+---+---+")
     print("    | A | B | C | D | E | F | G | H | I | J |")
     print("+---+---+---+---+---+---+---+---+---+---+---+")
-    for index,row in enumerate(grid):
+    for index, row in enumerate(grid):
         row_number = index + 1
         row_str = " | ".join(str(cell) if isinstance(cell, str) else " " for cell in row)
         print(f"|{row_number:2} | {row_str} |")
         print("+---+---+---+---+---+---+---+---+---+---+---+")
+
 
 def play():
     """
@@ -136,7 +143,7 @@ def play():
 
     while not all_boat_destroyed:
         display_player_board(player_board)
-        shoot("Choisissez des coordeonnées:\n", party_grid, player_board)
+        shoot("Choisissez des coordonnées:\n", party_grid, player_board)
         all_boat_destroyed = destroyed_boat(party_grid)
         time.sleep(1)
     else:
@@ -146,6 +153,7 @@ def play():
             play()
         else:
             print("Au revoir et à bientôt!")
+
 
 if __name__ == '__main__':
     play()
