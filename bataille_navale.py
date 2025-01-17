@@ -1,12 +1,19 @@
 import random
 import time
 
+from boat import Boat
+
+# Constant
+GRID_SIZE = 10
+SEA = 0
+LETTERS = [chr(letter_code) for letter_code in range(ord('A'), ord('A') + GRID_SIZE)]
+
 # Datas
-aircraft_carrier = [5, 5]
-cruiser = [4, 4]
-destroyer = [3, 3]
-submarine = [2, 3]
-torpedo = [1, 2]
+aircraft_carrier = Boat([], 0, 5, False)
+cruiser = Boat([], 0, 4, False)
+destroyer = Boat([], 0, 3, False)
+submarine = Boat([], 0, 3, False)
+torpedo = Boat([], 0, 2, False)
 fleet = [aircraft_carrier, cruiser, destroyer, submarine, torpedo]
 header = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9}
 
@@ -34,8 +41,56 @@ def init_board():
     grid = board()
 
     for boat in fleet:
+        boat.direction = init_boat_direction()
         place_boats(boat, grid)
     return grid
+
+
+def init_boat_direction():
+    """
+    Initialize the direction of boat
+    :return: 0 for horizontal and 1 for vertical
+    """
+    return random.randint(0, 1)
+
+
+def enough_space(tall, grid, x, y):
+    have_space = True
+
+    for i in range(tall):
+        if grid[x][y + i] != 0:
+            have_space = False
+
+    return have_space
+
+
+def horizontal_coordinate(tall):
+    """
+    Method for determinate line and column
+    :param tall: boat tall
+    :return: random x and y
+    """
+    return random.randint(0, (10 - tall)), random.randint(0, 9)
+
+
+def vertical_direction(tall):
+    """
+    Method for determinate line and column
+    :param tall: boat tall
+    :return: random x and y
+    """
+    return random.randint(0, 9), random.randint(0, (10 - tall))
+
+
+def placing_boat(direction, tall, grid, x, y, boat):
+    if direction == 0:
+        for i in range(tall):
+            grid[x + i][y] = tall
+            boat.position = (x, y)
+    else:
+        for i in range(tall):
+            grid[x][y + i] = tall
+            boat.position = (x, y)
 
 
 def place_boats(boat, grid):
@@ -44,34 +99,22 @@ def place_boats(boat, grid):
     :param boat: each boat in the fleet
     :param grid: grid created
     """
-    boat_number = boat[0]
-    boat_tall = boat[1]
-    x_direction = 0
+    boat_tall = boat.tall
     well_placed = False
-    direction = random.randint(0,1)
+    direction = boat.direction
 
     while not well_placed:
-        have_space = True
-        if direction == x_direction:
-            x = random.randint(0, (10 - boat_tall))
-            y = random.randint(0, 9)
-            for i in range(boat_tall):
-                if grid[x + i][y] != 0:
-                    have_space = False
+        if direction == 0:
+            x = horizontal_coordinate(boat_tall)[0]
+            y = horizontal_coordinate(boat_tall)[1]
+            enough_space(boat_tall, grid, x, y)
         else:
-            x = random.randint(0, 9)
-            y = random.randint(0, (10 - boat_tall))
-            for i in range(boat_tall):
-                if grid[x][y + i] != 0:
-                    have_space = False
+            x = vertical_direction(boat_tall)[0]
+            y = vertical_direction(boat_tall)[1]
+            enough_space(boat_tall, grid, x, y)
 
-        if have_space:
-            if direction == x_direction:
-                for i in range(boat_tall):
-                    grid[x + i][y] = boat_number
-            else:
-                for i in range(boat_tall):
-                    grid[x][y + i] = boat_number
+        if enough_space(boat_tall, grid, x, y):
+            placing_boat(direction, boat_tall, grid, x, y, boat)
             well_placed = True
 
 
@@ -123,14 +166,18 @@ def display_player_board(grid):
     Display the player board
     :param grid: empty board
     """
-    print("    +---+---+---+---+---+---+---+---+---+---+")
-    print("    | A | B | C | D | E | F | G | H | I | J |")
-    print("+---+---+---+---+---+---+---+---+---+---+---+")
+    print("    ", end="")
+    print("+---" * GRID_SIZE + "+", end="\n")
+    print("    ", end="|")
+    for x in range(GRID_SIZE):
+        print(" {} |".format(LETTERS[x]), end="")
+    print()
+    print("+---" * (GRID_SIZE + 1) + "+")
     for index, row in enumerate(grid):
         row_number = index + 1
         row_str = " | ".join(str(cell) if isinstance(cell, str) else " " for cell in row)
         print(f"|{row_number:2} | {row_str} |")
-        print("+---+---+---+---+---+---+---+---+---+---+---+")
+        print("+---" * (GRID_SIZE + 1) + "+")
 
 
 def play():
