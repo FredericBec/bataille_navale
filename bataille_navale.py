@@ -58,7 +58,7 @@ def enough_space(tall, grid, x, y):
     have_space = True
 
     for i in range(tall):
-        if grid[x][y + i] != 0:
+        if grid[x][y + i] != 0 and grid[x + i][y] != 0:
             have_space = False
 
     return have_space
@@ -118,6 +118,12 @@ def place_boats(boat, grid):
             well_placed = True
 
 
+def valid_coordinate(choice):
+    if choice[0].upper() in header.keys() and 0 <= int(choice[1:]) <= 10:
+        return True
+    return False
+
+
 def shoot(guess, grid, player_grid):
     """
     Allow the user to choose a cell in the board
@@ -127,21 +133,24 @@ def shoot(guess, grid, player_grid):
     """
     player_choice = input(guess)
 
-    y = header.get(player_choice[0].upper())
-    x = int(player_choice[1:]) - 1
-    match grid[x][y]:
-        case 1 | 2 | 3 | 4 | 5:
-            print("\nTouché")
-            grid[x][y] = "O"
-            player_grid[x][y] = "O"
-            if is_destroyed(x, y):
-                print("Le bateau est coulé!!")
-        case 0:
-            print("\nRaté")
-            grid[x][y] = "X"
-            player_grid[x][y] = "X"
-        case "O" | "X":
-            print("Vous avez déjà tiré à cette endroit!\n")
+    if valid_coordinate(player_choice):
+        y = header.get(player_choice[0].upper())
+        x = int(player_choice[1:]) - 1
+        match grid[x][y]:
+            case 1 | 2 | 3 | 4 | 5:
+                print("\nTouché")
+                grid[x][y] = "O"
+                player_grid[x][y] = "O"
+                if is_destroyed(x, y):
+                    print("Le bateau est coulé!!")
+            case 0:
+                print("\nRaté")
+                grid[x][y] = "X"
+                player_grid[x][y] = "X"
+            case "O" | "X":
+                print("Vous avez déjà tiré à cette endroit!\n")
+    else:
+        print("Veuillez entrer des coordonnées valides!")
 
 
 def is_destroyed(x, y):
