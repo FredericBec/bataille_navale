@@ -86,11 +86,11 @@ def placing_boat(direction, tall, grid, x, y, boat):
     if direction == 0:
         for i in range(tall):
             grid[x + i][y] = tall
-            boat.position = (x, y)
+            boat.position.append((x + i, y))
     else:
         for i in range(tall):
             grid[x][y + i] = tall
-            boat.position = (x, y)
+            boat.position.append((x, y + i))
 
 
 def place_boats(boat, grid):
@@ -134,6 +134,8 @@ def shoot(guess, grid, player_grid):
             print("\nTouché")
             grid[x][y] = "O"
             player_grid[x][y] = "O"
+            if is_destroyed(x, y):
+                print("Le bateau est coulé!!")
         case 0:
             print("\nRaté")
             grid[x][y] = "X"
@@ -142,7 +144,17 @@ def shoot(guess, grid, player_grid):
             print("Vous avez déjà tiré à cette endroit!\n")
 
 
-def destroyed_boat(grid):
+def is_destroyed(x, y):
+    for boat in fleet:
+        if (x, y) in boat.position:
+            boat.position.remove((x, y))
+            if not boat.position:
+                boat.sink = True
+                return boat.sink
+    return False
+
+
+def all_destroyed_boats(grid):
     """
     Method to indicate if all boats are destroyed
     :param grid: board with boats placed
@@ -191,15 +203,15 @@ def play():
     while not all_boat_destroyed:
         display_player_board(player_board)
         shoot("Choisissez des coordonnées:\n", party_grid, player_board)
-        all_boat_destroyed = destroyed_boat(party_grid)
+        all_boat_destroyed = all_destroyed_boats(party_grid)
         time.sleep(1)
+
+    display_player_board(player_board)
+    new_game = input("Voulez-vous rejouer? [Y/N] \n")
+    if new_game.casefold() == "y":
+        play()
     else:
-        display_player_board(player_board)
-        new_game = input("Voulez-vous rejouer? [Y/N] \n")
-        if new_game.casefold() == "y":
-            play()
-        else:
-            print("Au revoir et à bientôt!")
+        print("Au revoir et à bientôt!")
 
 
 if __name__ == '__main__':
