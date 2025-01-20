@@ -4,18 +4,18 @@ import time
 from boat import Boat
 
 # Constant
-GRID_SIZE = 10
-SEA = 0
-LETTERS = [chr(letter_code) for letter_code in range(ord('A'), ord('A') + GRID_SIZE)]
+GRID_SIZE: int = 10
+SEA: int = 0
+LETTERS: list[str] = [chr(letter_code) for letter_code in range(ord('A'), ord('A') + GRID_SIZE)]
 
 # Datas
-aircraft_carrier = Boat([], 0, 5, False)
-cruiser = Boat([], 0, 4, False)
-destroyer = Boat([], 0, 3, False)
-submarine = Boat([], 0, 3, False)
-torpedo = Boat([], 0, 2, False)
-fleet = [aircraft_carrier, cruiser, destroyer, submarine, torpedo]
-header = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9}
+aircraft_carrier: Boat = Boat([], 0, 5, False)
+cruiser: Boat = Boat([], 0, 4, False)
+destroyer: Boat = Boat([], 0, 3, False)
+submarine: Boat = Boat([], 0, 3, False)
+torpedo: Boat = Boat([], 0, 2, False)
+fleet: list[Boat] = [aircraft_carrier, cruiser, destroyer, submarine, torpedo]
+header: dict = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9}
 
 
 def board():
@@ -25,10 +25,10 @@ def board():
     """
     grid = []
 
-    for _ in range(10):
+    for _ in range(GRID_SIZE):
         y = []
-        for _ in range(10):
-            y.append(0)
+        for _ in range(GRID_SIZE):
+            y.append(SEA)
         grid.append(y)
     return grid
 
@@ -54,7 +54,7 @@ def init_boat_direction():
     return random.randint(0, 1)
 
 
-def enough_space(tall, grid, x, y):
+def enough_space(tall: int, grid, x: int, y: int):
     have_space = True
 
     for i in range(tall):
@@ -64,7 +64,7 @@ def enough_space(tall, grid, x, y):
     return have_space
 
 
-def horizontal_coordinate(tall):
+def horizontal_coordinate(tall: int):
     """
     Method for determinate line and column
     :param tall: boat tall
@@ -73,7 +73,7 @@ def horizontal_coordinate(tall):
     return random.randint(0, (10 - tall)), random.randint(0, 9)
 
 
-def vertical_direction(tall):
+def vertical_direction(tall: int):
     """
     Method for determinate line and column
     :param tall: boat tall
@@ -82,7 +82,7 @@ def vertical_direction(tall):
     return random.randint(0, 9), random.randint(0, (10 - tall))
 
 
-def placing_boat(direction, tall, grid, x, y, boat):
+def placing_boat(direction: int, tall: int, grid, x: int, y: int, boat: Boat):
     if direction == 0:
         for i in range(tall):
             grid[x + i][y] = tall
@@ -93,15 +93,15 @@ def placing_boat(direction, tall, grid, x, y, boat):
             boat.position.append((x, y + i))
 
 
-def place_boats(boat, grid):
+def place_boats(boat: Boat, grid):
     """
     Place boats randomly in the grid
     :param boat: each boat in the fleet
     :param grid: grid created
     """
-    boat_tall = boat.tall
-    well_placed = False
-    direction = boat.direction
+    boat_tall: int = boat.tall
+    well_placed: bool = False
+    direction: int = boat.direction
 
     while not well_placed:
         if direction == 0:
@@ -118,24 +118,24 @@ def place_boats(boat, grid):
             well_placed = True
 
 
-def valid_coordinate(choice):
+def valid_coordinate(choice: str):
     if choice[0].upper() in header.keys() and 0 <= int(choice[1:]) <= 10:
         return True
     return False
 
 
-def shoot(guess, grid, player_grid):
+def shoot(guess: str, grid, player_grid):
     """
     Allow the user to choose a cell in the board
     :param guess: question to the user
     :param grid: board generate
     :param player_grid: board of the player
     """
-    player_choice = input(guess)
+    player_choice: str = input(guess)
 
     if valid_coordinate(player_choice):
-        y = header.get(player_choice[0].upper())
-        x = int(player_choice[1:]) - 1
+        y: int = header.get(player_choice[0].upper())
+        x: int = int(player_choice[1:]) - 1
         match grid[x][y]:
             case 1 | 2 | 3 | 4 | 5:
                 print("\nTouché")
@@ -153,7 +153,7 @@ def shoot(guess, grid, player_grid):
         print("Veuillez entrer des coordonnées valides!")
 
 
-def is_destroyed(x, y):
+def is_destroyed(x: int, y: int):
     for boat in fleet:
         if (x, y) in boat.position:
             boat.position.remove((x, y))
