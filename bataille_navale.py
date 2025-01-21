@@ -18,7 +18,7 @@ fleet: list[Boat] = [aircraft_carrier, cruiser, destroyer, submarine, torpedo]
 header: dict = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9}
 
 
-def board():
+def board() -> list[list[int]]:
     """
     Define the grid before placing boats
     :return: grid
@@ -33,7 +33,7 @@ def board():
     return grid
 
 
-def init_board():
+def init_board() -> list[list[int]]:
     """
     Initialize the grid with the boats
     :return: grid
@@ -46,7 +46,7 @@ def init_board():
     return grid
 
 
-def init_boat_direction():
+def init_boat_direction() -> int:
     """
     Initialize the direction of boat
     :return: 0 for horizontal and 1 for vertical
@@ -54,7 +54,7 @@ def init_boat_direction():
     return random.randint(0, 1)
 
 
-def enough_space(tall: int, grid, x: int, y: int):
+def enough_space(tall: int, grid, x: int, y: int) -> bool:
     have_space = True
 
     for i in range(tall):
@@ -64,7 +64,7 @@ def enough_space(tall: int, grid, x: int, y: int):
     return have_space
 
 
-def horizontal_coordinate(tall: int):
+def horizontal_coordinate(tall: int) -> tuple[int, int]:
     """
     Method for determinate line and column
     :param tall: boat tall
@@ -73,7 +73,7 @@ def horizontal_coordinate(tall: int):
     return random.randint(0, (10 - tall)), random.randint(0, 9)
 
 
-def vertical_direction(tall: int):
+def vertical_direction(tall: int) -> tuple[int, int]:
     """
     Method for determinate line and column
     :param tall: boat tall
@@ -82,7 +82,7 @@ def vertical_direction(tall: int):
     return random.randint(0, 9), random.randint(0, (10 - tall))
 
 
-def placing_boat(direction: int, tall: int, grid, x: int, y: int, boat: Boat):
+def placing_boat(direction: int, tall: int, grid, x: int, y: int, boat: Boat) -> None:
     if direction == 0:
         for i in range(tall):
             grid[x + i][y] = tall
@@ -93,7 +93,7 @@ def placing_boat(direction: int, tall: int, grid, x: int, y: int, boat: Boat):
             boat.position.append((x, y + i))
 
 
-def place_boats(boat: Boat, grid):
+def place_boats(boat: Boat, grid) -> None:
     """
     Place boats randomly in the grid
     :param boat: each boat in the fleet
@@ -118,13 +118,13 @@ def place_boats(boat: Boat, grid):
             well_placed = True
 
 
-def valid_coordinate(choice: str):
+def valid_coordinate(choice: str) -> bool:
     if choice[0].upper() in header.keys() and 0 <= int(choice[1:]) <= 10:
         return True
     return False
 
 
-def shoot(guess: str, grid, player_grid):
+def shoot(guess: str, grid, player_grid) -> None:
     """
     Allow the user to choose a cell in the board
     :param guess: question to the user
@@ -153,7 +153,7 @@ def shoot(guess: str, grid, player_grid):
         print("Veuillez entrer des coordonnées valides!")
 
 
-def is_destroyed(x: int, y: int):
+def is_destroyed(x: int, y: int) -> bool:
     for boat in fleet:
         if (x, y) in boat.position:
             boat.position.remove((x, y))
@@ -163,7 +163,7 @@ def is_destroyed(x: int, y: int):
     return False
 
 
-def all_destroyed_boats(grid):
+def all_destroyed_boats(grid) -> bool:
     """
     Method to indicate if all boats are destroyed
     :param grid: board with boats placed
@@ -182,7 +182,7 @@ def all_destroyed_boats(grid):
         return False
 
 
-def display_player_board(grid):
+def display_player_board(grid) -> None:
     """
     Display the player board
     :param grid: empty board
@@ -201,7 +201,7 @@ def display_player_board(grid):
         print("+---" * (GRID_SIZE + 1) + "+")
 
 
-def play():
+def play() -> None:
     """
     Method to launch the game until all boats are destroyed
     """
